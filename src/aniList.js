@@ -1,12 +1,11 @@
-import {MessageEmbed} from 'discord.js';
-
-//const{MessageEmbed} = require('discord.js')
+//import {MessageEmbed} from 'discord.js';
+const{MessageEmbed} = require('discord.js')
 
 const aniListApi = "https://graphql.anilist.co"
 
 //Post to aniListApi
 async function aniRequest(variables, query){
-    var options = {
+    let options = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -45,12 +44,12 @@ async function aniRequest(variables, query){
 
 
 //Sends back discord embed of character information
-export async function searchCharacter(message){
-    var variables = {
+exports.searchCharacter = async function(message){
+    let variables = {
         charName: message.content.split(/\s+/).slice(1).join(" ")
     };
 
-    var query = `
+    let query = `
     query($charName: String){
         Character(search: $charName){
             name{
@@ -91,13 +90,13 @@ export async function searchCharacter(message){
 
 
 //Sends discord embed of Anime or Manga information
-export async function searchMedia(message, type){
-    var variables ={
+exports.searchMedia= async function(message, type){
+    let variables ={
         aniName: message.content.split(/\s+/).slice(1).join(" "),
         type: type //string can be casted to MediaType
     };
 
-    var query = `
+    let query = `
     query($aniName: String, $type: MediaType){
         Media(search: $aniName, type: $type){ #according to API, this is fine
            title{
