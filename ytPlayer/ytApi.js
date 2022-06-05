@@ -92,7 +92,7 @@ async function videoLookup(message){
       //quota exceeds leads here as well and of course, nothing you can do
         response = "no video found"
     }
-
+    
     message.channel.send(response)
     return arr
 }

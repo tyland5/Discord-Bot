@@ -8,6 +8,7 @@ const { join } = require('node:path');
 const youtube = require("../ytPlayer/ytApi.js")
 const discordVoice = require("@discordjs/voice")
 const ytdl = require("discord-ytdl-core");
+const minigames = require("../minigames/minigames.js")
 
 const returnedLink = "https://www.youtube.com/watch?v=" //concatenate with videoId in json
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] })
@@ -32,6 +33,14 @@ client.on("messageCreate", message =>{
 
     else if(message.content.startsWith(".searchmanga")){
         aniList.searchMedia(message, "MANGA")
+    }
+
+    else if(message.content.startsWith(".counting")){
+        minigames.countingGame(message)
+    }
+
+    else if(message.content.startsWith(".rps")){
+        minigames.rps(message)
     }
 
     else if(message.content.startsWith(".psong")){
