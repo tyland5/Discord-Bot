@@ -79,7 +79,7 @@ async function videoLookup(message){
 
         for(var i =0; i < videos.length; i++){
             //appending to array in JS is USUALLY O(1) as it's implemented via hashtable. ofc, not same for prepend 
-            arr.push(videos[i].id.videoId)
+            arr.push([videos[i].snippet.title, videos[i].id.videoId])
             response += i + ":  " + videos[i].snippet.title +"\n"
         }
     }
