@@ -39,9 +39,10 @@ exports.SongQueue = class{
     remove(index){
         if(index < this.#size){
             if(index === 0){
+                const removed = this.#head
                 this.#head = this.#head.next
                 this.#size -= 1
-                return
+                return removed
             }
 
             let counter = 0
@@ -52,18 +53,20 @@ exports.SongQueue = class{
                 counter += 1
             }
 
+            const removed = rover.next
             rover.next = rover.next.next
             this.#size -=1 
             if(rover.next === null){ //this means we just removed the tail
                 this.#tail = rover
             }
+            return removed
         }
         else{
-            //figure out what to do. probably throw an error
+            throw new Error("This should never happen")
         }
     }
 
-    getQueue() {return this.#head}
+    getHead() {return this.#head}
 
     getSize(){return this.#size}
 

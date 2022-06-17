@@ -17,7 +17,6 @@ let OAuth = null
 // Load client secrets from a local file.
 async function getAuthentication(){
   let authentication = new OAuth2("","","")
-
   try{
     let content = await fs.readFile("client_secret.json", "utf8")
     authentication = await authorize(JSON.parse(content))
@@ -83,16 +82,16 @@ async function videoLookup(message){
             response += i + ":  " + videos[i].snippet.title +"\n"
         }
     }
-    catch{
+    catch (err){
         if(OAuth === null){
           OAuth = await getAuthentication() //have to get authentication first before doing anything so await
           return videoLookup(message) 
         }
       //somewhere in the future, can check if the OAuth has expired
+      //"If your app is in testing mode then user tokens will expire in 7 days"
       //quota exceeds leads here as well and of course, nothing you can do
         response = "no video found"
     }
-    
-    message.channel.send(response)
+    if(arr.length != 1){message.channel.send(response)} //if user puts in a proper url, should only return one result and just automatically queue/play it
     return arr
 }
