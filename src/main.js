@@ -19,12 +19,9 @@ client.once('ready', () => {
 })
 
 client.on("messageCreate", message =>{
-    if(message.content === "hello"){
-        message.reply("Hello <@" + message.author + ">")   
-    }
 
     //ALL ANILIST COMMANDS
-    else if(message.content.startsWith(".searchchar")){
+    if(message.content.startsWith(".searchchar")){
         aniList.searchCharacter(message)
     }
 
