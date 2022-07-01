@@ -36,6 +36,9 @@ client.on("messageCreate", message =>{
         aniList.searchMedia(message, "MANGA")
     }
 
+    else if(message.content.startsWith(".randomani")){
+        aniList.giveRandomAni(message, "ANIME")
+    }
 
     //ALL MINIGAME COMMANDS
     else if(message.content.startsWith(".counting")){
@@ -146,6 +149,7 @@ client.on("messageCreate", message =>{
         func()
     }
 
+    //ALL VOICE COMMANDS 
     else if(message.content.startsWith(".copycat")){
         musicPlayer.listen(message)
     }

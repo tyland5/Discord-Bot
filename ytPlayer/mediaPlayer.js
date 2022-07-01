@@ -109,6 +109,14 @@ exports.play = p
 exports.listen = async function (message){
     const vcchannel = message.member.voice.channel
 
+    if(vcchannel === null){
+        message.reply("Please join a voice channel first")
+        return
+    }
+    if(audioByGuild.has(vcchannel.guild.id)){
+        message.reply("The bot is currently busy playing audio")
+        return
+    }
     const connection = discordVoice.joinVoiceChannel({
         channelId: vcchannel.id,
         guildId: vcchannel.guild.id,
@@ -122,13 +130,12 @@ exports.listen = async function (message){
         
         //duration specifies how long the silence can be. creates readable stream of OPUS packets (encoded)
         const opusStream = receiver.subscribe(message.member.id, {end:{behavior:discordVoice.EndBehaviorType.AfterSilence, duration: 1000}}) 
-        const output = fs.createWriteStream('testing.opus')
-       // const txtFile = fs.createWriteStream('audio2.txt')
+        const output = fs.createWriteStream('testing.pcm')
+        //const output2 = fs.createWriteStream('testing2.opus')
         //with help of: https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Audio_concepts
         
-        //is opus not possible to store in storage other than to a pcm?
+        //google cloud speech to text seems to support pcm so we'll just leave it to converting to pcm
         const opusDecoder = new prism.opus.Decoder({ rate: 48000, channels: 2, frameSize: 960 }) 
-        //const opusEncoder = new prism.opus.Encoder({ rate: 48000, channels: 2, frameSize: 960 })
         
         /*
         const oggStream = new prism.opus.OggLogicalBitstream({
@@ -141,9 +148,8 @@ exports.listen = async function (message){
             },
         });
         */
-    
+        
         opusStream.on("data", (chunk)=>{
-            //oggStream.write(chunk)
             opusDecoder.write(chunk)
         })
 
@@ -154,6 +160,13 @@ exports.listen = async function (message){
             const resource = discordVoice.createAudioResource(opusDecoder) //creates resource out of readable 
             connection.subscribe(audioPlayer)
             audioPlayer.play(resource) //copy cat
+
+            audioPlayer.on(discordVoice.AudioPlayerStatus.Idle, ()=>{
+                audioPlayer.stop()
+                connection.destroy()
+            })
+
+            opusDecoder.pipe(output) //will change to pipeline later on for google api
         })
         
 

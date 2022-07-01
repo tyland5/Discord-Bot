@@ -126,6 +126,51 @@ exports.searchMedia= async function(message, type){
     let json = await aniRequest(variables, query)
 
     //originally had it as if statement, but "failed" lookups would have a malformed object
+    sendAniEmbed(message, json, type)
+}
+
+exports.giveRandomAni = async function(message, type){
+    let genre = message.content.split(/\s+/).slice(1).join(" ")
+
+    let variables = {
+        genre : genre,
+        type: type
+    }
+
+    let query = `
+    query($genre: String, $type: String){
+        Media(genre: $genre, type: $type){
+            title{
+                english
+                romaji
+                native
+            }
+            startDate{
+             month  
+             day 
+             year
+            }
+            endDate{
+             month  
+             day 
+             year
+            }
+            description
+            averageScore
+            coverImage{
+                large
+            }
+        }
+    }
+    `
+
+    let json = await aniRequest(variables, query)
+    //sendAniEmbed(message,json, type)
+    console.log(json)
+}
+
+//"Helper function". Avoid repeat
+function sendAniEmbed(message, json, type){
     try{ 
         const anime = json.data.Media //really anime or manga
         const title = anime.title.english
@@ -146,7 +191,9 @@ exports.searchMedia= async function(message, type){
         
         message.channel.send({embeds:[embed]})
     }
-    catch {
+    catch (err){
         message.reply("Please enter a valid anime name")
+        console.log(err)
     }
 }
+
